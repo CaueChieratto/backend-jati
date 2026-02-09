@@ -1,4 +1,3 @@
-````markdown
 # Backend Jati - API de Catálogo
 
 Este é o backend da aplicação Jati, uma API RESTful desenvolvida em Node.js para gerenciar um catálogo de produtos hierárquico. O sistema permite o gerenciamento de Linhas, Produtos, Tabelas e Dados técnicos, implementando funcionalidades de criação, leitura, atualização e exclusão (CRUD), incluindo _soft delete_ (lixeira e restauração).
@@ -26,7 +25,6 @@ Clone o repositório e instale as dependências:
 ```bash
 npm install
 ```
-````
 
 ### 2. Configuração de Variáveis de Ambiente
 
