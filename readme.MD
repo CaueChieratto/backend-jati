@@ -26,7 +26,6 @@ Clone o repositório e instale as dependências:
 ```bash
 npm install
 ```
-````
 
 ### 2. Configuração de Variáveis de Ambiente
 
@@ -54,6 +53,22 @@ npm start
 ```
 
 O servidor iniciará em `http://localhost:3000`.
+
+### 4. Populando o Banco de Dados (Data Seeding)
+
+Para facilitar o setup inicial ou restaurar o estado original do catálogo, o projeto inclui um script utilitário de importação. O arquivo `importarCatalogo.js`, localizado na raiz do projeto, funciona como um **Seed Script**.
+
+Ele lê o arquivo JSON localizado em `src/data/catalogo.json` e popula o banco de dados MongoDB com a estrutura completa de linhas, produtos, tabelas e dados técnicos. Isso serve como um ponto de restauração (_checkpoint_) ou carga inicial de dados.
+
+Para executar a importação:
+
+```bash
+node importarCatalogo.js
+
+```
+
+> **Nota:** Certifique-se de que o MongoDB esteja rodando e que as variáveis de ambiente (`.env`) estejam configuradas corretamente antes de executar este script.
+````
 
 ---
 
