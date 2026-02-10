@@ -47,10 +47,9 @@ async function obterLinha(nomeLinha) {
 async function criarLinhaService(linha) {
   const novaLinha = criarModeloLinha(linha);
 
-  if (!linha.linha || !linha.painel_linha) {
+  if (!linha.linha || !linha.painel_linha || !linha.imagem_linha) {
     throw new Error("LINHA_INVALIDA");
   }
-
   await salvarLinha(novaLinha);
 
   return novaLinha;

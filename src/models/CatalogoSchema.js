@@ -32,6 +32,8 @@ const ProdutoSchema = new mongoose.Schema({
 const LinhaSchema = new mongoose.Schema({
   linha: { type: String, required: true },
   painel_linha: { type: String, required: true },
+  imagem_linha: { type: String, required: true },
+  pdf_linha: String,
   deletado: { type: Boolean, default: false },
   produtos_linha: [ProdutoSchema],
 });
