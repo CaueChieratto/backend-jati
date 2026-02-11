@@ -4,6 +4,7 @@ const {
   acharLinhaPeloNome,
   salvarLinha,
   salvarAlteracoesLinha,
+  listarLinhasSemProdutos,
 } = require("../repositories/linhasRepository");
 
 async function obterTodasLinhas() {
@@ -16,6 +17,16 @@ async function obterTodasLinhas() {
   const linhasAtivas = linhas.filter((linha) => !linha.deletado);
 
   return linhasAtivas;
+}
+
+async function obterLinhasPaginadas(pagina, limite) {
+  const linhas = await listarLinhasSemProdutos(pagina, limite);
+
+  if (!linhas || linhas.length === 0) {
+    throw new Error("CATALOGO_VAZIO");
+  }
+
+  return linhas;
 }
 
 async function obterTodasLinhasDeletadas() {
@@ -79,6 +90,7 @@ async function restaurarLinhaService(nomeLinha) {
 
 module.exports = {
   obterTodasLinhas,
+  obterLinhasPaginadas,
   obterTodasLinhasDeletadas,
   obterLinha,
   criarLinhaService,

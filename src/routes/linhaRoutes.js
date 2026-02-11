@@ -9,9 +9,11 @@ const {
   alterarLinha,
   deletarLinha,
   restaurarLinha,
+  listarLinhasResumidas,
 } = require("../controllers/linhaController");
 
 router.get("/catalogo", listarTodasLinhas);
+router.get("/catalogo/resumo", listarLinhasResumidas);
 router.get("/catalogo/deletados", listarTodasLinhasDeletadas);
 router.get("/catalogo/:linha", listarLinha);
 router.post("/catalogo", criarLinha);

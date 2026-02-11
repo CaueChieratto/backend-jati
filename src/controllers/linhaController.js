@@ -6,11 +6,24 @@ const {
   alterarLinhaService,
   deletarLinhaService,
   restaurarLinhaService,
+  obterLinhasPaginadas,
 } = require("../services/linhaService");
 
 async function listarTodasLinhas(req, res, next) {
   try {
     const linhas = await obterTodasLinhas();
+    res.json(linhas);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function listarLinhasResumidas(req, res, next) {
+  try {
+    const pagina = parseInt(req.query.pagina) || 1;
+    const limite = parseInt(req.query.limite) || 10;
+
+    const linhas = await obterLinhasPaginadas(pagina, limite);
     res.json(linhas);
   } catch (error) {
     next(error);
@@ -79,6 +92,7 @@ async function restaurarLinha(req, res, next) {
 
 module.exports = {
   listarTodasLinhas,
+  listarLinhasResumidas,
   listarTodasLinhasDeletadas,
   listarLinha,
   criarLinha,
