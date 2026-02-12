@@ -1,4 +1,5 @@
 const LinhaModel = require("../models/CatalogoSchema");
+const { formatarParaBusca } = require("../utils/formatador");
 
 async function listarTodasLinhas() {
   return await LinhaModel.find();
@@ -13,11 +14,14 @@ async function listarLinhasSemProdutos(pagina = 1, limite = 10) {
 }
 
 async function acharLinhaPeloNome(nomeLinha) {
-  return await LinhaModel.findOne({
-    linha: { $regex: new RegExp(`^${nomeLinha}$`, "i") },
-  });
-}
+  const nomeBuscadoFormatado = formatarParaBusca(nomeLinha);
 
+  const todasLinhas = await LinhaModel.find();
+
+  return todasLinhas.find(
+    (l) => formatarParaBusca(l.linha) === nomeBuscadoFormatado,
+  );
+}
 async function salvarLinha(novaLinha) {
   return await LinhaModel.create(novaLinha);
 }

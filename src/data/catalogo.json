@@ -3,6 +3,7 @@
     "linha": "INJETADA",
     "imagem_linha": "imagem_linha",
     "painel_linha": "/imagens-pagina-secundaria/paineis/injetado.jpg",
+    "pdf_linha": "pdf_linha",
     "produtos_linha": [
       {
         "produto_id": 1,
@@ -270,6 +271,7 @@
     "linha": "IRRIGA SOLDÁVEL",
     "imagem_linha": "imagem_linha",
     "painel_linha": "/imagens-pagina-secundaria/paineis/irriga-soldavel.jpg",
+    "pdf_linha": "pdf_linha",
     "produtos_linha": [
       {
         "produto_id": 10,
@@ -1457,6 +1459,7 @@
     "linha": "IRRIGA JEI",
     "imagem_linha": "imagem_linha",
     "painel_linha": "/imagens-pagina-secundaria/paineis/irriga-jei.jpg",
+    "pdf_linha": "pdf_linha",
     "produtos_linha": [
       {
         "imagem_patente": "/imagens-pagina-secundaria/paineis/patente.jpg",
@@ -2863,6 +2866,7 @@
     "linha": "DEFOFO JEI",
     "imagem_linha": "imagem_linha",
     "painel_linha": "/imagens-pagina-secundaria/paineis/defofo-jei.jpg",
+    "pdf_linha": "pdf_linha",
     "produtos_linha": [
       {
         "produto_id": 59,
@@ -5173,6 +5177,7 @@
     "linha": "DEFOFO SOLDÁVEL",
     "imagem_linha": "imagem_linha",
     "painel_linha": "/imagens-pagina-secundaria/paineis/defofo-soldavel.jpg",
+    "pdf_linha": "pdf_linha",
     "produtos_linha": [
       {
         "produto_id": 95,
@@ -6716,6 +6721,7 @@
     "linha": "MRR CL20",
     "imagem_linha": "imagem_linha",
     "painel_linha": "/imagens-pagina-secundaria/paineis/marrom.jpg",
+    "pdf_linha": "pdf_linha",
     "produtos_linha": [
       {
         "produto_id": 121,
@@ -6978,6 +6984,7 @@
     "linha": "ANÉIS DE VEDAÇÃO",
     "imagem_linha": "imagem_linha",
     "painel_linha": "/imagens-pagina-secundaria/paineis/aneis-de-vedacao.jpg",
+    "pdf_linha": "pdf_linha",
     "produtos_linha": [
       {
         "produto_id": 126,

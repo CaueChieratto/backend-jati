@@ -6,6 +6,7 @@ const {
   salvarAlteracoesLinha,
   listarLinhasSemProdutos,
 } = require("../repositories/linhasRepository");
+const { formatarParaSalvar } = require("../utils/formatador");
 
 async function obterTodasLinhas() {
   const linhas = await listarTodasLinhas();
@@ -56,9 +57,18 @@ async function obterLinha(nomeLinha) {
 }
 
 async function criarLinhaService(linha) {
+  if (linha.linha) {
+    linha.linha = formatarParaSalvar(linha.linha);
+  }
+
   const novaLinha = criarModeloLinha(linha);
 
-  if (!linha.linha || !linha.painel_linha || !linha.imagem_linha) {
+  if (
+    !linha.linha ||
+    !linha.painel_linha ||
+    !linha.imagem_linha ||
+    !linha.pdf_linha
+  ) {
     throw new Error("LINHA_INVALIDA");
   }
   await salvarLinha(novaLinha);
@@ -69,6 +79,10 @@ async function criarLinhaService(linha) {
 async function alterarLinhaService(nomeLinha, alteracoes) {
   const linhaParaAlterar = await obterLinha(nomeLinha);
   if (linhaParaAlterar.deletado) throw new Error("LINHA_DELETADA");
+
+  if (alteracoes.linha) {
+    alteracoes.linha = formatarParaSalvar(alteracoes.linha);
+  }
 
   const linhaAtualizada = { ...alteracoes };
   return await salvarAlteracoesLinha(linhaParaAlterar, linhaAtualizada);
