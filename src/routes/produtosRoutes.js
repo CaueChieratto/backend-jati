@@ -4,6 +4,7 @@ const router = express.Router();
 const {
   listarProdutos,
   listarProdutoPorId,
+  listarProdutosPaginados,
   criarProduto,
   alterarProduto,
   deletarProduto,
@@ -11,6 +12,7 @@ const {
 } = require("../controllers/produtosController");
 
 router.get("/catalogo/:linha/produtos", listarProdutos);
+router.get("/catalogo/:linha/produtos/paginados", listarProdutosPaginados);
 router.get("/catalogo/:linha/:produtoId", listarProdutoPorId);
 router.post("/catalogo/:linha", criarProduto);
 router.patch("/catalogo/:linha/:produtoId", alterarProduto);

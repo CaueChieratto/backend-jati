@@ -1,5 +1,6 @@
 const {
   listarProdutosDaLinhaService,
+  listarProdutosPaginadosService,
   obterProdutosPorId,
   criarProdutoService,
   alterarProdutoService,
@@ -12,6 +13,23 @@ async function listarProdutos(req, res, next) {
     const { linha } = req.params;
     const produtos = await listarProdutosDaLinhaService(linha);
     res.json(produtos);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function listarProdutosPaginados(req, res, next) {
+  try {
+    const { linha } = req.params;
+    const pagina = parseInt(req.query.pagina) || 1;
+    const limite = parseInt(req.query.limite) || 10;
+
+    const resultado = await listarProdutosPaginadosService(
+      linha,
+      pagina,
+      limite,
+    );
+    res.json(resultado);
   } catch (error) {
     next(error);
   }
@@ -74,6 +92,7 @@ async function restaurarProduto(req, res, next) {
 
 module.exports = {
   listarProdutos,
+  listarProdutosPaginados,
   listarProdutoPorId,
   criarProduto,
   alterarProduto,
