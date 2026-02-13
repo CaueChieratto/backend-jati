@@ -17,6 +17,22 @@ async function obterProduto(linha, id) {
   return produto;
 }
 
+async function listarProdutosDaLinhaService(nomeLinha) {
+  const linha = await obterLinha(nomeLinha);
+
+  const produtosLimpos = linha.produtos_linha.map((produto) => ({
+    produto_id: produto.produto_id,
+    nome_produto: produto.nome_produto,
+    imagem_produto: produto.imagem_produto,
+    imagem_patente: produto.imagem_patente,
+    pdf_produto: produto.pdf_produto,
+    descricao_produto: produto.descricao_produto,
+    deletado: produto.deletado,
+  }));
+
+  return produtosLimpos;
+}
+
 async function obterProdutosPorId(nomeLinha, id) {
   const linha = await obterLinha(nomeLinha);
   const produtoId = await obterProduto(linha, id);
@@ -75,6 +91,7 @@ async function restaurarProdutoService(linha, produtoId) {
 
 module.exports = {
   obterProduto,
+  listarProdutosDaLinhaService,
   obterProdutosPorId,
   criarProdutoService,
   alterarProdutoService,

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
+  listarProdutos,
   listarProdutoPorId,
   criarProduto,
   alterarProduto,
@@ -9,6 +10,7 @@ const {
   restaurarProduto,
 } = require("../controllers/produtosController");
 
+router.get("/catalogo/:linha/produtos", listarProdutos);
 router.get("/catalogo/:linha/:produtoId", listarProdutoPorId);
 router.post("/catalogo/:linha", criarProduto);
 router.patch("/catalogo/:linha/:produtoId", alterarProduto);

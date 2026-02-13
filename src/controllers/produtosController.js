@@ -1,10 +1,21 @@
 const {
+  listarProdutosDaLinhaService,
   obterProdutosPorId,
   criarProdutoService,
   alterarProdutoService,
   deletarProdutoService,
   restaurarProdutoService,
 } = require("../services/produtosService");
+
+async function listarProdutos(req, res, next) {
+  try {
+    const { linha } = req.params;
+    const produtos = await listarProdutosDaLinhaService(linha);
+    res.json(produtos);
+  } catch (error) {
+    next(error);
+  }
+}
 
 async function listarProdutoPorId(req, res, next) {
   try {
@@ -62,6 +73,7 @@ async function restaurarProduto(req, res, next) {
 }
 
 module.exports = {
+  listarProdutos,
   listarProdutoPorId,
   criarProduto,
   alterarProduto,
