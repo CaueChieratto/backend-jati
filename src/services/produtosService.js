@@ -101,94 +101,82 @@ async function alterarProdutoService(linha, produtoId, alteracoes) {
 }
 
 async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  const linhaDoc = await LinhaModel.findOne({
+    linha: new RegExp(`^${nomeLinha}$`, "i"),
+  });
 
-  try {
-    const linhaDoc = await LinhaModel.findOne({
-      linha: new RegExp(`^${nomeLinha}$`, "i"),
-    }).session(session);
-    if (!linhaDoc) throw new Error("LINHA_NAO_ENCONTRADA");
+  if (!linhaDoc) throw new Error("LINHA_NAO_ENCONTRADA");
 
-    const codigosNovos = [];
-    for (const tabela of produtoCompleto.tabelas_produto || []) {
-      if (tabela.deletado) continue;
-      for (const dado of tabela.dados || []) {
-        if (dado.codigo && !dado.deletado) {
-          codigosNovos.push(dado.codigo);
-        }
+  const codigosNovos = [];
+  for (const tabela of produtoCompleto.tabelas_produto || []) {
+    if (tabela.deletado) continue;
+    for (const dado of tabela.dados || []) {
+      if (dado.codigo && !dado.deletado) {
+        codigosNovos.push(dado.codigo);
       }
     }
+  }
 
-    for (const codigo of codigosNovos) {
-      const query = {
-        produtos_linha: {
-          $elemMatch: {
-            produto_id: { $ne: produtoCompleto.produto_id || -1 },
-            "tabelas_produto.dados": {
-              $elemMatch: { codigo: codigo, deletado: { $ne: true } },
-            },
+  for (const codigo of codigosNovos) {
+    const query = {
+      produtos_linha: {
+        $elemMatch: {
+          produto_id: { $ne: produtoCompleto.produto_id || -1 },
+          "tabelas_produto.dados": {
+            $elemMatch: { codigo: codigo, deletado: { $ne: true } },
           },
         },
-      };
-      const existeEmOutroProduto =
-        await LinhaModel.findOne(query).session(session);
+      },
+    };
+    const existeEmOutroProduto = await LinhaModel.findOne(query);
 
-      if (existeEmOutroProduto) {
-        const error = new Error("CODIGO_JA_EXISTENTE");
-        error.codigo = codigo;
-        throw error;
-      }
+    if (existeEmOutroProduto) {
+      const error = new Error("CODIGO_JA_EXISTENTE");
+      error.codigo = codigo;
+      throw error;
     }
-
-    if (!produtoCompleto.produto_id) {
-      produtoCompleto.produto_id = await criarIdProduto();
-    }
-
-    let maxTabelaId = (await criarIdTabela()) - 1;
-    for (const tabela of produtoCompleto.tabelas_produto || []) {
-      if (!tabela._id || tabela._id === "") {
-        maxTabelaId++;
-        tabela.tabela_id = maxTabelaId;
-      }
-    }
-
-    if (produtoCompleto._id === "") {
-      delete produtoCompleto._id;
-    }
-
-    for (const tabela of produtoCompleto.tabelas_produto || []) {
-      if (tabela._id === "") {
-        delete tabela._id;
-      }
-      for (const dado of tabela.dados || []) {
-        if (dado._id === "") {
-          delete dado._id;
-        }
-      }
-    }
-
-    const indexProduto = linhaDoc.produtos_linha.findIndex(
-      (p) => p.produto_id === produtoCompleto.produto_id,
-    );
-
-    if (indexProduto >= 0) {
-      linhaDoc.produtos_linha[indexProduto] = produtoCompleto;
-    } else {
-      linhaDoc.produtos_linha.push(produtoCompleto);
-    }
-
-    await linhaDoc.save({ session });
-
-    await session.commitTransaction();
-    session.endSession();
-
-    return produtoCompleto;
-  } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-    throw error;
   }
+
+  if (!produtoCompleto.produto_id) {
+    produtoCompleto.produto_id = await criarIdProduto();
+  }
+
+  let maxTabelaId = (await criarIdTabela()) - 1;
+  for (const tabela of produtoCompleto.tabelas_produto || []) {
+    if (!tabela._id || tabela._id === "") {
+      maxTabelaId++;
+      tabela.tabela_id = maxTabelaId;
+    }
+  }
+
+  if (!produtoCompleto._id || produtoCompleto._id === "") {
+    delete produtoCompleto._id;
+  }
+
+  for (const tabela of produtoCompleto.tabelas_produto || []) {
+    if (!tabela._id || tabela._id === "") {
+      delete tabela._id;
+    }
+    for (const dado of tabela.dados || []) {
+      if (!dado._id || dado._id === "") {
+        delete dado._id;
+      }
+    }
+  }
+
+  const indexProduto = linhaDoc.produtos_linha.findIndex(
+    (p) => p.produto_id === produtoCompleto.produto_id,
+  );
+
+  if (indexProduto >= 0) {
+    linhaDoc.produtos_linha.set(indexProduto, produtoCompleto);
+  } else {
+    linhaDoc.produtos_linha.push(produtoCompleto);
+  }
+
+  await linhaDoc.save();
+
+  return produtoCompleto;
 }
 
 async function deletarProdutoService(linha, produtoId) {

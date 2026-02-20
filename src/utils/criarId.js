@@ -4,10 +4,14 @@ async function criarIdProduto() {
   const linhas = await LinhaModel.find({}, "produtos_linha.produto_id");
 
   const todosOsIds = linhas.flatMap((linha) =>
-    linha.produtos_linha.map((produto) => produto.produto_id),
+    (linha.produtos_linha || []).map((produto) => produto.produto_id),
   );
 
-  const maiorIdAtual = todosOsIds.length > 0 ? Math.max(...todosOsIds) : 0;
+  const idsValidos = todosOsIds.filter(
+    (id) => typeof id === "number" && !isNaN(id),
+  );
+
+  const maiorIdAtual = idsValidos.length > 0 ? Math.max(...idsValidos) : 0;
   return maiorIdAtual + 1;
 }
 
