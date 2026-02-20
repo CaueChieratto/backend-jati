@@ -6,6 +6,7 @@ const {
   alterarProdutoService,
   deletarProdutoService,
   restaurarProdutoService,
+  salvarProdutoCompletoService,
 } = require("../services/produtosService");
 
 async function listarProdutos(req, res, next) {
@@ -41,6 +42,27 @@ async function listarProdutoPorId(req, res, next) {
     const produto = await obterProdutosPorId(linha, produtoId);
     res.json(produto);
   } catch (error) {
+    next(error);
+  }
+}
+
+async function salvarProdutoCompleto(req, res, next) {
+  try {
+    const { linha } = req.params;
+    const produtoCompleto = req.body;
+
+    const produtoSalvo = await salvarProdutoCompletoService(
+      linha,
+      produtoCompleto,
+    );
+    res.status(200).json(produtoSalvo);
+  } catch (error) {
+    if (error.message === "CODIGO_JA_EXISTENTE") {
+      return res.status(400).json({
+        erro: "Esse código está sendo utilizado!",
+        codigo: error.codigo,
+      });
+    }
     next(error);
   }
 }
@@ -94,6 +116,7 @@ module.exports = {
   listarProdutos,
   listarProdutosPaginados,
   listarProdutoPorId,
+  salvarProdutoCompleto,
   criarProduto,
   alterarProduto,
   deletarProduto,
