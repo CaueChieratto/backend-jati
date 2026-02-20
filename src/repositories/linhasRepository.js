@@ -22,6 +22,7 @@ async function acharLinhaPeloNome(nomeLinha) {
     (l) => formatarParaBusca(l.linha) === nomeBuscadoFormatado,
   );
 }
+
 async function salvarLinha(novaLinha) {
   return await LinhaModel.create(novaLinha);
 }
@@ -31,10 +32,15 @@ async function salvarAlteracoesLinha(linhaParaAlterar, linhaAtualizada) {
   return await linhaParaAlterar.save();
 }
 
+async function excluirLinhaFisicamente(id) {
+  return await LinhaModel.findByIdAndDelete(id);
+}
+
 module.exports = {
   listarTodasLinhas,
   listarLinhasSemProdutos,
   acharLinhaPeloNome,
   salvarLinha,
   salvarAlteracoesLinha,
+  excluirLinhaFisicamente,
 };

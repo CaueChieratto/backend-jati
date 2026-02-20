@@ -10,6 +10,7 @@ const {
   deletarProduto,
   restaurarProduto,
   salvarProdutoCompleto,
+  excluirProduto,
 } = require("../controllers/produtosController");
 
 router.get("/catalogo/:linha/produtos", listarProdutos);
@@ -20,5 +21,6 @@ router.post("/catalogo/:linha", criarProduto);
 router.patch("/catalogo/:linha/:produtoId", alterarProduto);
 router.patch("/catalogo/:linha/:produtoId/deletar", deletarProduto);
 router.patch("/catalogo/:linha/:produtoId/restaurar", restaurarProduto);
+router.delete("/catalogo/:linha/:produtoId", excluirProduto);
 
 module.exports = router;

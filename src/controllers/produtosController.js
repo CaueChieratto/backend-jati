@@ -7,6 +7,7 @@ const {
   deletarProdutoService,
   restaurarProdutoService,
   salvarProdutoCompletoService,
+  excluirProdutoService,
 } = require("../services/produtosService");
 
 async function listarProdutos(req, res, next) {
@@ -112,6 +113,16 @@ async function restaurarProduto(req, res, next) {
   }
 }
 
+async function excluirProduto(req, res, next) {
+  try {
+    const { linha, produtoId } = req.params;
+    await excluirProdutoService(linha, produtoId);
+    res.status(200).json({ msg: "Produto excluído fisicamente com sucesso!" });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   listarProdutos,
   listarProdutosPaginados,
@@ -121,4 +132,5 @@ module.exports = {
   alterarProduto,
   deletarProduto,
   restaurarProduto,
+  excluirProduto,
 };

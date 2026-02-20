@@ -6,6 +6,7 @@ const {
   acharCodigoReferencia,
   salvarAlteracoesDados,
   verificarDuplicidadeDeCodigo,
+  excluirDadosFisicamente,
 } = require("../repositories/dadosRepository");
 const { criarModeloDados } = require("../models");
 const { acharTabelaPorId } = require("../repositories/tabelasRepository");
@@ -142,6 +143,30 @@ async function restaurarDadosService(
   return dadosParaRestaurar;
 }
 
+async function excluirDadosService(
+  nomeLinha,
+  produtoId,
+  tabelaId,
+  codigoReferencia,
+) {
+  const dados = await obterCodigoReferencia(
+    nomeLinha,
+    produtoId,
+    tabelaId,
+    codigoReferencia,
+  );
+
+  if (!dados) {
+    throw new Error("DADOS_DA_TABELA_INVALIDOS");
+  }
+
+  const linha = await obterLinha(nomeLinha);
+  const produto = await obterProduto(linha, produtoId);
+  const tabela = await acharTabelaPorId(produto, tabelaId);
+
+  await excluirDadosFisicamente(linha, tabela, codigoReferencia);
+}
+
 module.exports = {
   obterDados,
   obterDadosDaTabela,
@@ -149,4 +174,5 @@ module.exports = {
   alterarDadosService,
   deletarDadosService,
   restaurarDadosService,
+  excluirDadosService,
 };

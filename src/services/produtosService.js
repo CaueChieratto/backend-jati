@@ -2,6 +2,7 @@ const {
   acharProdutoPeloId,
   salvarProduto,
   salvarAlteracoesProduto,
+  excluirProdutoFisicamente,
 } = require("../repositories/produtosRepository");
 const { obterLinha } = require("./linhaService");
 const { criarIdProduto, criarIdTabela } = require("../utils/criarId");
@@ -146,9 +147,24 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
 
     let maxTabelaId = (await criarIdTabela()) - 1;
     for (const tabela of produtoCompleto.tabelas_produto || []) {
-      if (!tabela._id) {
+      if (!tabela._id || tabela._id === "") {
         maxTabelaId++;
         tabela.tabela_id = maxTabelaId;
+      }
+    }
+
+    if (produtoCompleto._id === "") {
+      delete produtoCompleto._id;
+    }
+
+    for (const tabela of produtoCompleto.tabelas_produto || []) {
+      if (tabela._id === "") {
+        delete tabela._id;
+      }
+      for (const dado of tabela.dados || []) {
+        if (dado._id === "") {
+          delete dado._id;
+        }
       }
     }
 
@@ -199,6 +215,14 @@ async function restaurarProdutoService(linha, produtoId) {
   return produtoParaRestaurar;
 }
 
+async function excluirProdutoService(nomeLinha, produtoId) {
+  const linha = await obterLinha(nomeLinha);
+  const produtoParaExcluir = await obterProdutosPorId(nomeLinha, produtoId);
+
+  await excluirProdutoFisicamente(linha, produtoParaExcluir.produto_id);
+  return true;
+}
+
 module.exports = {
   obterProduto,
   listarProdutosDaLinhaService,
@@ -209,4 +233,5 @@ module.exports = {
   salvarProdutoCompletoService,
   deletarProdutoService,
   restaurarProdutoService,
+  excluirProdutoService,
 };

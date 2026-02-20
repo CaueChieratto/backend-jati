@@ -4,6 +4,7 @@ const {
   alterarDadosService,
   deletarDadosService,
   restaurarDadosService,
+  excluirDadosService,
 } = require("../services/dadosService");
 
 async function listarDadosDaTabela(req, res, next) {
@@ -81,10 +82,21 @@ async function restaurarDados(req, res, next) {
   }
 }
 
+async function excluirDados(req, res, next) {
+  try {
+    const { linha, produtoId, tabelaId, codigo } = req.params;
+    await excluirDadosService(linha, produtoId, tabelaId, codigo);
+    res.status(200).json({ msg: "Dados excluídos fisicamente com sucesso!" });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   listarDadosDaTabela,
   adicionarDadosNaTabela,
   alterarDados,
   deletarDados,
   restaurarDados,
+  excluirDados,
 };

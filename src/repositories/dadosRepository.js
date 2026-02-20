@@ -35,6 +35,11 @@ async function salvarAlteracoesDados(dadosParaAlterar, dadosAtualizados) {
   if (linhaPai) await linhaPai.save();
 }
 
+async function excluirDadosFisicamente(linha, tabela, codigoReferencia) {
+  tabela.dados = tabela.dados.filter((d) => d.codigo !== codigoReferencia);
+  await linha.save();
+}
+
 module.exports = {
   acharCodigoReferencia,
   salvarDados,

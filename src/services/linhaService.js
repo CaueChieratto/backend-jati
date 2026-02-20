@@ -5,6 +5,7 @@ const {
   salvarLinha,
   salvarAlteracoesLinha,
   listarLinhasSemProdutos,
+  excluirLinhaFisicamente,
 } = require("../repositories/linhasRepository");
 const { formatarParaSalvar } = require("../utils/formatador");
 
@@ -102,6 +103,11 @@ async function restaurarLinhaService(nomeLinha) {
   return await salvarAlteracoesLinha(linhaParaRestaurar, { deletado: false });
 }
 
+async function excluirLinhaService(nomeLinha) {
+  const linhaParaExcluir = await obterLinha(nomeLinha);
+  return await excluirLinhaFisicamente(linhaParaExcluir._id);
+}
+
 module.exports = {
   obterTodasLinhas,
   obterLinhasPaginadas,
@@ -111,4 +117,5 @@ module.exports = {
   alterarLinhaService,
   deletarLinhaService,
   restaurarLinhaService,
+  excluirLinhaService,
 };

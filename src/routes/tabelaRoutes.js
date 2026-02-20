@@ -8,6 +8,7 @@ const {
   alterarTabela,
   deletarTabela,
   restaurarTabela,
+  excluirTabela,
 } = require("../controllers/tabelaController");
 
 router.get("/catalogo/:linha/:produtoId/tabelas", listarTabelasDoProduto);
@@ -22,5 +23,6 @@ router.patch(
   "/catalogo/:linha/:produtoId/tabelas/:tabelaId/restaurar",
   restaurarTabela,
 );
+router.delete("/catalogo/:linha/:produtoId/tabelas/:tabelaId", excluirTabela);
 
 module.exports = router;

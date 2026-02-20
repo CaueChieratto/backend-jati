@@ -16,8 +16,16 @@ async function salvarAlteracoesTabela(tabelaParaAlterar, tabelaAtualizada) {
   if (linhaPai) await linhaPai.save();
 }
 
+async function excluirTabelaFisicamente(linha, produto, tabelaId) {
+  produto.tabelas_produto = produto.tabelas_produto.filter(
+    (t) => t.tabela_id !== Number(tabelaId),
+  );
+  await linha.save();
+}
+
 module.exports = {
   acharTabelaPorId,
   salvarTabela,
   salvarAlteracoesTabela,
+  excluirTabelaFisicamente,
 };

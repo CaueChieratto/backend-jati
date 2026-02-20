@@ -16,6 +16,13 @@ async function salvarAlteracoesProduto(produtoParaAlterar, produtoAtualizado) {
   if (linhaPai) await linhaPai.save();
 }
 
+async function excluirProdutoFisicamente(linha, produtoId) {
+  linha.produtos_linha = linha.produtos_linha.filter(
+    (p) => p.produto_id !== Number(produtoId),
+  );
+  await linha.save();
+}
+
 module.exports = {
   acharProdutoPeloId,
   salvarProduto,

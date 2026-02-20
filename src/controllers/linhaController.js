@@ -7,6 +7,7 @@ const {
   deletarLinhaService,
   restaurarLinhaService,
   obterLinhasPaginadas,
+  excluirLinhaService,
 } = require("../services/linhaService");
 
 async function listarTodasLinhas(req, res, next) {
@@ -90,6 +91,16 @@ async function restaurarLinha(req, res, next) {
   }
 }
 
+async function excluirLinha(req, res, next) {
+  try {
+    const { linha } = req.params;
+    await excluirLinhaService(linha);
+    res.status(200).json({ msg: "Linha excluída fisicamente com sucesso!" });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   listarTodasLinhas,
   listarLinhasResumidas,
@@ -99,4 +110,5 @@ module.exports = {
   alterarLinha,
   deletarLinha,
   restaurarLinha,
+  excluirLinha,
 };

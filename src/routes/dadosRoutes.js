@@ -7,6 +7,7 @@ const {
   alterarDados,
   deletarDados,
   restaurarDados,
+  excluirDados,
 } = require("../controllers/dadosController");
 
 router.get(
@@ -28,6 +29,10 @@ router.patch(
 router.patch(
   "/catalogo/:linha/:produtoId/tabelas/:tabelaId/dados/:codigo/restaurar",
   restaurarDados,
+);
+router.delete(
+  "/catalogo/:linha/:produtoId/tabelas/:tabelaId/dados/:codigo",
+  excluirDados,
 );
 
 module.exports = router;

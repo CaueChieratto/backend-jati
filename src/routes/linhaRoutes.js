@@ -10,6 +10,7 @@ const {
   deletarLinha,
   restaurarLinha,
   listarLinhasResumidas,
+  excluirLinha,
 } = require("../controllers/linhaController");
 
 router.get("/catalogo", listarTodasLinhas);
@@ -20,5 +21,6 @@ router.post("/catalogo", criarLinha);
 router.patch("/catalogo/:linha", alterarLinha);
 router.patch("/catalogo/:linha/deletar", deletarLinha);
 router.patch("/catalogo/:linha/restaurar", restaurarLinha);
+router.delete("/catalogo/:linha", excluirLinha);
 
 module.exports = router;

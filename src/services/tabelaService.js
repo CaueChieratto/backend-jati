@@ -4,6 +4,7 @@ const {
   salvarTabela,
   acharTabelaPorId,
   salvarAlteracoesTabela,
+  excluirTabelaFisicamente,
 } = require("../repositories/tabelasRepository");
 const { criarModeloTabela } = require("../models");
 const { criarIdTabela } = require("../utils/criarId");
@@ -94,6 +95,18 @@ async function restaurarTabelaService(linha, produtoId, tabelaId) {
   return tabelaParaRestaurar;
 }
 
+async function excluirTabelaService(nomeLinha, produtoId, tabelaId) {
+  const linha = await obterLinha(nomeLinha);
+  const produto = await obterProduto(linha, produtoId);
+  const tabelaParaExcluir = acharTabelaPorId(produto, tabelaId);
+
+  if (!tabelaParaExcluir) {
+    throw new Error("TABELA_NAO_ENCONTRADA_PARA_O_INDICE_INFORMADO");
+  }
+
+  await excluirTabelaFisicamente(linha, produto, tabelaId);
+}
+
 module.exports = {
   obterTabelas,
   obterTabelaPorId,
@@ -102,4 +115,5 @@ module.exports = {
   alterarTabelaService,
   deletarTabelaService,
   restaurarTabelaService,
+  excluirTabelaService,
 };
