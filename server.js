@@ -7,8 +7,25 @@ const routes = require("./src/routes");
 const errorHandler = require("./src/middlewares/errorHandler");
 
 app.use(express.json());
-app.use(cors());
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.FRONTEND_ADMIN_URL,
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  }),
+);
 const connectDatabase = require("./src/config/databaseConfig");
 
 app.use(routes);
