@@ -6,6 +6,10 @@ const produtosRoutes = require("./produtosRoutes");
 const tabelaRoutes = require("./tabelaRoutes");
 const dadosRoutes = require("./dadosRoutes");
 
+const authMiddleware = require("../middlewares/authMiddleware");
+
+router.use(authMiddleware);
+
 router.use(linhaRoutes);
 router.use(produtosRoutes);
 router.use(tabelaRoutes);

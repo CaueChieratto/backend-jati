@@ -10,6 +10,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_LOCAL,
   process.env.FRONTEND_ADMIN_URL,
 ].filter(Boolean);
 
