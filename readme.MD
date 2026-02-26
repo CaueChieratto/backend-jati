@@ -9,6 +9,7 @@ Este é o backend da aplicação Jati, uma API RESTful desenvolvida em Node.js p
 - **MongoDB**: Banco de dados NoSQL.
 - **Mongoose**: ODM (Object Data Modeling) para MongoDB.
 - **Dotenv**: Gerenciamento de variáveis de ambiente.
+- **CORS**: Middleware para permitir pedidos de diferentes origens.
 - **Nodemon**: Utilitário para desenvolvimento (hot-reload).
 
 ## ⚙️ Pré-requisitos
@@ -24,15 +25,20 @@ Clone o repositório e instale as dependências:
 
 ```bash
 npm install
-
 ```
+
+````
 
 ### 2. Configuração de Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz do projeto seguindo o modelo do `.env.example`:
+Crie um ficheiro `.env` na raiz do projeto seguindo o modelo do `.env.example`:
 
 ```env
 MONGO_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/banco
+FRONTEND_URL_LOCAL=http://localhost:5173
+FRONTEND_URL=[https://oseusite.com.br/](https://oseusite.com.br/)
+FRONTEND_ADMIN_URL=[https://admin.oseusite.com.br](https://admin.oseusite.com.br)
+TOKEN_SECRETO=seu_token_secreto_aqui
 
 ```
 
@@ -56,9 +62,9 @@ O servidor iniciará em `http://localhost:3000`.
 
 ### 4. Populando o Banco de Dados (Data Seeding)
 
-Para facilitar o setup inicial ou restaurar o estado original do catálogo, o projeto inclui um script utilitário de importação. O arquivo `importarCatalogo.js`, localizado na raiz do projeto, funciona como um **Seed Script**.
+Para facilitar o setup inicial ou restaurar o estado original do catálogo, o projeto inclui um script utilitário de importação. O ficheiro `importarCatalogo.js`, localizado na raiz do projeto, funciona como um **Seed Script**.
 
-Ele lê o arquivo JSON localizado em `src/data/catalogo.json` e popula o banco de dados MongoDB com a estrutura completa de linhas, produtos, tabelas e dados técnicos. Isso serve como um ponto de restauração (_checkpoint_) ou carga inicial de dados.
+Ele lê o ficheiro JSON localizado em `src/data/catalogo.json` e popula o banco de dados MongoDB com a estrutura completa de linhas, produtos, tabelas e dados técnicos. Isso serve como um ponto de restauração (_checkpoint_) ou carga inicial de dados.
 
 Para executar a importação:
 
@@ -147,3 +153,4 @@ Rotas para gerenciamento dos itens (dados) dentro das tabelas.
 | `PATCH`  | `/catalogo/:linha/:produtoId/tabelas/:tabelaId/dados/:codigo/deletar`   | Deleta (Soft Delete) um dado específico.         |
 | `PATCH`  | `/catalogo/:linha/:produtoId/tabelas/:tabelaId/dados/:codigo/restaurar` | Restaura um dado específico.                     |
 | `DELETE` | `/catalogo/:linha/:produtoId/tabelas/:tabelaId/dados/:codigo`           | Exclui fisicamente o dado técnico específico.    |
+````
