@@ -131,8 +131,34 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
     const existeEmOutroProduto = await LinhaModel.findOne(query);
 
     if (existeEmOutroProduto) {
+      let nomeProdutoConflito = "Desconhecido";
+
+      for (const prod of existeEmOutroProduto.produtos_linha) {
+        if (prod.produto_id === produtoCompleto.produto_id) continue;
+
+        let encontrou = false;
+        for (const tab of prod.tabelas_produto || []) {
+          if (tab.deletado) continue;
+          for (const dado of tab.dados || []) {
+            if (dado.codigo === codigo && !dado.deletado) {
+              encontrou = true;
+              break;
+            }
+          }
+          if (encontrou) break;
+        }
+
+        if (encontrou) {
+          nomeProdutoConflito = prod.nome_produto;
+          break;
+        }
+      }
+
       const error = new Error("CODIGO_JA_EXISTENTE");
       error.codigo = codigo;
+      error.produto = nomeProdutoConflito;
+      error.linha = existeEmOutroProduto.linha;
+
       throw error;
     }
   }

@@ -62,6 +62,8 @@ async function salvarProdutoCompleto(req, res, next) {
       return res.status(400).json({
         erro: "Esse código está sendo utilizado!",
         codigo: error.codigo,
+        produto: error.produto,
+        linha: error.linha,
       });
     }
     next(error);
