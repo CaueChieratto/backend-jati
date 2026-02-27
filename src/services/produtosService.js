@@ -10,6 +10,7 @@ const { criarModeloProduto } = require("../models");
 const { acharLinhaPeloNome } = require("../repositories/linhasRepository");
 const mongoose = require("mongoose");
 const LinhaModel = require("../models/CatalogoSchema");
+const { deletarArquivoCloudinary } = require("../utils/cloudinaryUtils");
 
 async function obterProduto(linha, id) {
   const produto = await acharProdutoPeloId(linha, id);
@@ -92,6 +93,42 @@ async function alterarProdutoService(linha, produtoId, alteracoes) {
   const produtoParaAlterar = await obterProdutosPorId(linha, produtoId);
   if (produtoParaAlterar.deletado) {
     throw new Error("PRODUTO_DELETADO");
+  }
+
+  if (
+    alteracoes.imagem_produto !== undefined &&
+    alteracoes.imagem_produto !== produtoParaAlterar.imagem_produto
+  ) {
+    if (
+      produtoParaAlterar.imagem_produto &&
+      produtoParaAlterar.imagem_produto.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(produtoParaAlterar.imagem_produto);
+    }
+  }
+
+  if (
+    alteracoes.imagem_patente !== undefined &&
+    alteracoes.imagem_patente !== produtoParaAlterar.imagem_patente
+  ) {
+    if (
+      produtoParaAlterar.imagem_patente &&
+      produtoParaAlterar.imagem_patente.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(produtoParaAlterar.imagem_patente);
+    }
+  }
+
+  if (
+    alteracoes.pdf_produto !== undefined &&
+    alteracoes.pdf_produto !== produtoParaAlterar.pdf_produto
+  ) {
+    if (
+      produtoParaAlterar.pdf_produto &&
+      produtoParaAlterar.pdf_produto.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(produtoParaAlterar.pdf_produto, true);
+    }
   }
 
   const produtoAtualizado = { ...alteracoes };
@@ -195,6 +232,35 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
   );
 
   if (indexProduto >= 0) {
+    const produtoAntigo = linhaDoc.produtos_linha[indexProduto];
+
+    if (produtoCompleto.imagem_produto !== produtoAntigo.imagem_produto) {
+      if (
+        produtoAntigo.imagem_produto &&
+        produtoAntigo.imagem_produto.includes("cloudinary")
+      ) {
+        await deletarArquivoCloudinary(produtoAntigo.imagem_produto);
+      }
+    }
+
+    if (produtoCompleto.imagem_patente !== produtoAntigo.imagem_patente) {
+      if (
+        produtoAntigo.imagem_patente &&
+        produtoAntigo.imagem_patente.includes("cloudinary")
+      ) {
+        await deletarArquivoCloudinary(produtoAntigo.imagem_patente);
+      }
+    }
+
+    if (produtoCompleto.pdf_produto !== produtoAntigo.pdf_produto) {
+      if (
+        produtoAntigo.pdf_produto &&
+        produtoAntigo.pdf_produto.includes("cloudinary")
+      ) {
+        await deletarArquivoCloudinary(produtoAntigo.pdf_produto, true);
+      }
+    }
+
     linhaDoc.produtos_linha.set(indexProduto, produtoCompleto);
   } else {
     linhaDoc.produtos_linha.push(produtoCompleto);
@@ -232,6 +298,27 @@ async function restaurarProdutoService(linha, produtoId) {
 async function excluirProdutoService(nomeLinha, produtoId) {
   const linha = await obterLinha(nomeLinha);
   const produtoParaExcluir = await obterProdutosPorId(nomeLinha, produtoId);
+
+  if (
+    produtoParaExcluir.imagem_produto &&
+    produtoParaExcluir.imagem_produto.includes("cloudinary")
+  ) {
+    await deletarArquivoCloudinary(produtoParaExcluir.imagem_produto);
+  }
+
+  if (
+    produtoParaExcluir.imagem_patente &&
+    produtoParaExcluir.imagem_patente.includes("cloudinary")
+  ) {
+    await deletarArquivoCloudinary(produtoParaExcluir.imagem_patente);
+  }
+
+  if (
+    produtoParaExcluir.pdf_produto &&
+    produtoParaExcluir.pdf_produto.includes("cloudinary")
+  ) {
+    await deletarArquivoCloudinary(produtoParaExcluir.pdf_produto, true);
+  }
 
   await excluirProdutoFisicamente(linha, produtoParaExcluir.produto_id);
   return true;
