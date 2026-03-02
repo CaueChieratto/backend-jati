@@ -23,9 +23,21 @@ async function excluirProdutoFisicamente(linha, produtoId) {
   await linha.save();
 }
 
+async function atualizarOrdemDosProdutos(linha, idsProdutosOrdenados) {
+  linha.produtos_linha.sort((a, b) => {
+    return (
+      idsProdutosOrdenados.indexOf(a.produto_id) -
+      idsProdutosOrdenados.indexOf(b.produto_id)
+    );
+  });
+
+  await linha.save();
+}
+
 module.exports = {
   acharProdutoPeloId,
   salvarProduto,
   salvarAlteracoesProduto,
   excluirProdutoFisicamente,
+  atualizarOrdemDosProdutos,
 };

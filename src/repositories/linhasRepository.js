@@ -23,6 +23,19 @@ async function acharLinhaPeloNome(nomeLinha) {
   );
 }
 
+async function atualizarOrdemDasLinhas(idsOrdenados) {
+  const operacoes = idsOrdenados.map((id, index) => ({
+    updateOne: {
+      filter: { _id: id },
+      update: { $set: { ordem: index } },
+    },
+  }));
+
+  if (operacoes.length > 0) {
+    return await LinhaModel.bulkWrite(operacoes);
+  }
+}
+
 async function salvarLinha(novaLinha) {
   return await LinhaModel.create(novaLinha);
 }
@@ -41,6 +54,7 @@ module.exports = {
   listarLinhasSemProdutos,
   acharLinhaPeloNome,
   salvarLinha,
+  atualizarOrdemDasLinhas,
   salvarAlteracoesLinha,
   excluirLinhaFisicamente,
 };

@@ -11,6 +11,7 @@ const {
   restaurarLinha,
   listarLinhasResumidas,
   excluirLinha,
+  reordenarLinhas,
 } = require("../controllers/linhaController");
 
 router.get("/catalogo", listarTodasLinhas);
@@ -18,6 +19,7 @@ router.get("/catalogo/resumo", listarLinhasResumidas);
 router.get("/catalogo/deletados", listarTodasLinhasDeletadas);
 router.get("/catalogo/:linha", listarLinha);
 router.post("/catalogo", criarLinha);
+router.patch("/catalogo/reordenar", reordenarLinhas);
 router.patch("/catalogo/:linha", alterarLinha);
 router.patch("/catalogo/:linha/deletar", deletarLinha);
 router.patch("/catalogo/:linha/restaurar", restaurarLinha);

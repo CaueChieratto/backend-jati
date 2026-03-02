@@ -9,6 +9,7 @@ const {
   obterLinhasPaginadas,
   excluirLinhaService,
 } = require("../services/linhaService");
+const { atualizarOrdemDasLinhas } = require("../repositories/linhasRepository");
 
 async function listarTodasLinhas(req, res, next) {
   try {
@@ -47,6 +48,26 @@ async function listarLinha(req, res, next) {
     res.json(produtosDaLinha);
   } catch (error) {
     next(error);
+  }
+}
+
+async function reordenarLinhas(req, res) {
+  try {
+    const { ids } = req.body;
+    if (!ids || !Array.isArray(ids)) {
+      return res
+        .status(400)
+        .json({ message: "É necessário enviar um array de IDs válido." });
+    }
+
+    await atualizarOrdemDasLinhas(ids);
+    return res
+      .status(200)
+      .json({ message: "Ordem das linhas atualizada com sucesso." });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Erro ao reordenar linhas", error: error.message });
   }
 }
 
@@ -106,6 +127,7 @@ module.exports = {
   listarLinhasResumidas,
   listarTodasLinhasDeletadas,
   listarLinha,
+  reordenarLinhas,
   criarLinha,
   alterarLinha,
   deletarLinha,

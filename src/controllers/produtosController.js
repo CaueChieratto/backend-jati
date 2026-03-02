@@ -9,6 +9,10 @@ const {
   salvarProdutoCompletoService,
   excluirProdutoService,
 } = require("../services/produtosService");
+const { acharLinhaPeloNome } = require("../repositories/linhasRepository");
+const {
+  atualizarOrdemDosProdutos,
+} = require("../repositories/produtosRepository");
 
 async function listarProdutos(req, res, next) {
   try {
@@ -125,6 +129,33 @@ async function excluirProduto(req, res, next) {
   }
 }
 
+async function reordenarProdutos(req, res) {
+  try {
+    const { linha } = req.params;
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids)) {
+      return res
+        .status(400)
+        .json({ message: "É necessário enviar um array de IDs válido." });
+    }
+
+    const linhaEncontrada = await acharLinhaPeloNome(linha);
+    if (!linhaEncontrada) {
+      return res.status(404).json({ message: "Linha não encontrada." });
+    }
+
+    await atualizarOrdemDosProdutos(linhaEncontrada, ids);
+    return res
+      .status(200)
+      .json({ message: "Ordem dos produtos atualizada com sucesso." });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Erro ao reordenar produtos", error: error.message });
+  }
+}
+
 module.exports = {
   listarProdutos,
   listarProdutosPaginados,
@@ -135,4 +166,5 @@ module.exports = {
   deletarProduto,
   restaurarProduto,
   excluirProduto,
+  reordenarProdutos,
 };
