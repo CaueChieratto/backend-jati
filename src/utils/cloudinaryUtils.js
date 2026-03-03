@@ -18,33 +18,45 @@ const getPublicIdFromUrl = (url, isRaw = false) => {
       path = path.split("/").slice(1).join("/");
     }
 
-    if (isRaw) {
-      return path;
-    }
+    if (isRaw) return path;
 
     const lastDotIndex = path.lastIndexOf(".");
     return lastDotIndex !== -1 ? path.substring(0, lastDotIndex) : path;
   } catch (error) {
-    console.error("Erro ao extrair public_id:", error);
     return null;
   }
 };
 
 const deletarArquivoCloudinary = async (url, isRaw = false) => {
+  if (!process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    throw new Error(
+      "Erro no Backend: CLOUDINARY_API_KEY ou API_SECRET estão ausentes no .env!",
+    );
+  }
+
+  const publicId = getPublicIdFromUrl(url, isRaw);
+  if (!publicId) {
+    throw new Error(
+      `Erro interno: Não foi possível extrair o ID do Cloudinary da URL: ${url}`,
+    );
+  }
+
+  const options = isRaw ? { resource_type: "raw" } : {};
+
   try {
-    const publicId = getPublicIdFromUrl(url, isRaw);
+    const resposta = await cloudinary.uploader.destroy(publicId, options);
 
-    if (publicId) {
-      const options = isRaw ? { resource_type: "raw" } : {};
-
-      const resultado = await cloudinary.uploader.destroy(publicId, options);
-      console.log(
-        `Cloudinary apagado: ${publicId} | Resultado:`,
-        resultado.result,
+    if (resposta.result !== "ok" && resposta.result !== "not found") {
+      throw new Error(
+        `Cloudinary recusou apagar o arquivo ${publicId}. Motivo retornado: ${resposta.result}`,
       );
     }
+
+    return resposta;
   } catch (error) {
-    console.error(`Erro ao deletar arquivo do Cloudinary (${url}):`, error);
+    throw new Error(
+      `Falha na API do Cloudinary ao apagar ${publicId}: ${error.message}`,
+    );
   }
 };
 
