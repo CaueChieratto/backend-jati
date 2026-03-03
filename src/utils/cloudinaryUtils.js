@@ -6,18 +6,24 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const getPublicIdFromUrl = (url) => {
+const getPublicIdFromUrl = (url, isRaw = false) => {
   if (!url) return null;
   try {
     const parts = url.split("/upload/");
     if (parts.length < 2) return null;
 
     let path = parts[1];
+
     if (path.match(/^v\d+\//)) {
       path = path.split("/").slice(1).join("/");
     }
 
-    return path.substring(0, path.lastIndexOf("."));
+    if (isRaw) {
+      return path;
+    }
+
+    const lastDotIndex = path.lastIndexOf(".");
+    return lastDotIndex !== -1 ? path.substring(0, lastDotIndex) : path;
   } catch (error) {
     console.error("Erro ao extrair public_id:", error);
     return null;
@@ -26,12 +32,16 @@ const getPublicIdFromUrl = (url) => {
 
 const deletarArquivoCloudinary = async (url, isRaw = false) => {
   try {
-    const publicId = getPublicIdFromUrl(url);
+    const publicId = getPublicIdFromUrl(url, isRaw);
+
     if (publicId) {
-      console.log(`Tentando deletar URL: ${url} | Public ID: ${publicId}`);
       const options = isRaw ? { resource_type: "raw" } : {};
-      await cloudinary.uploader.destroy(publicId, options);
-      console.log(`Arquivo deletado do Cloudinary: ${publicId}`);
+
+      const resultado = await cloudinary.uploader.destroy(publicId, options);
+      console.log(
+        `Cloudinary apagado: ${publicId} | Resultado:`,
+        resultado.result,
+      );
     }
   } catch (error) {
     console.error(`Erro ao deletar arquivo do Cloudinary (${url}):`, error);
