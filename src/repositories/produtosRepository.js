@@ -25,10 +25,17 @@ async function excluirProdutoFisicamente(linha, produtoId) {
 
 async function atualizarOrdemDosProdutos(linha, idsProdutosOrdenados) {
   linha.produtos_linha.sort((a, b) => {
-    return (
-      idsProdutosOrdenados.indexOf(a.produto_id) -
-      idsProdutosOrdenados.indexOf(b.produto_id)
+    let indexA = idsProdutosOrdenados.findIndex(
+      (id) => String(id) === String(a.produto_id),
     );
+    let indexB = idsProdutosOrdenados.findIndex(
+      (id) => String(id) === String(b.produto_id),
+    );
+
+    if (indexA === -1) indexA = Infinity;
+    if (indexB === -1) indexB = Infinity;
+
+    return indexA - indexB;
   });
 
   await linha.save();
