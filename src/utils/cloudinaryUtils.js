@@ -8,6 +8,7 @@ cloudinary.config({
 
 const getPublicIdFromUrl = (url, isRaw = false) => {
   if (!url) return null;
+
   try {
     const parts = url.split("/upload/");
     if (parts.length < 2) return null;
@@ -18,10 +19,13 @@ const getPublicIdFromUrl = (url, isRaw = false) => {
       path = path.split("/").slice(1).join("/");
     }
 
-    if (isRaw) return path;
+    const [cleanPath] = path.split("?");
 
-    const lastDotIndex = path.lastIndexOf(".");
-    return lastDotIndex !== -1 ? path.substring(0, lastDotIndex) : path;
+    const lastDotIndex = cleanPath.lastIndexOf(".");
+    const withoutExtension =
+      lastDotIndex !== -1 ? cleanPath.substring(0, lastDotIndex) : cleanPath;
+
+    return withoutExtension;
   } catch (error) {
     return null;
   }
