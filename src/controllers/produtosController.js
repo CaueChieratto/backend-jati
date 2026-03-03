@@ -60,6 +60,7 @@ async function salvarProdutoCompleto(req, res, next) {
       linha,
       produtoCompleto,
     );
+
     res.status(200).json(produtoSalvo);
   } catch (error) {
     if (error.message === "CODIGO_JA_EXISTENTE") {
@@ -70,7 +71,8 @@ async function salvarProdutoCompleto(req, res, next) {
         linha: error.linha,
       });
     }
-    next(error);
+
+    return next(error);
   }
 }
 

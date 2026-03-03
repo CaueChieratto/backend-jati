@@ -231,6 +231,10 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
     (p) => p.produto_id === produtoCompleto.produto_id,
   );
 
+  const debugCloudinary = {
+    deletions: [],
+  };
+
   if (indexProduto >= 0) {
     const produtoAntigo = linhaDoc.produtos_linha[indexProduto];
 
@@ -239,7 +243,14 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
         produtoAntigo.imagem_produto &&
         produtoAntigo.imagem_produto.includes("cloudinary")
       ) {
-        await deletarArquivoCloudinary(produtoAntigo.imagem_produto);
+        const r = await deletarArquivoCloudinary(
+          produtoAntigo.imagem_produto,
+          false,
+        );
+        debugCloudinary.deletions.push({
+          campo: "imagem_produto",
+          ...r,
+        });
       }
     }
 
@@ -248,7 +259,14 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
         produtoAntigo.imagem_patente &&
         produtoAntigo.imagem_patente.includes("cloudinary")
       ) {
-        await deletarArquivoCloudinary(produtoAntigo.imagem_patente);
+        const r = await deletarArquivoCloudinary(
+          produtoAntigo.imagem_patente,
+          false,
+        );
+        debugCloudinary.deletions.push({
+          campo: "imagem_patente",
+          ...r,
+        });
       }
     }
 
@@ -257,7 +275,14 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
         produtoAntigo.pdf_produto &&
         produtoAntigo.pdf_produto.includes("cloudinary")
       ) {
-        await deletarArquivoCloudinary(produtoAntigo.pdf_produto, true);
+        const r = await deletarArquivoCloudinary(
+          produtoAntigo.pdf_produto,
+          true,
+        );
+        debugCloudinary.deletions.push({
+          campo: "pdf_produto",
+          ...r,
+        });
       }
     }
 
@@ -268,7 +293,10 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
 
   await linhaDoc.save();
 
-  return produtoCompleto;
+  return {
+    ...produtoCompleto,
+    _debugCloudinary: debugCloudinary,
+  };
 }
 
 async function deletarProdutoService(linha, produtoId) {

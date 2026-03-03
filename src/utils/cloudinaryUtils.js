@@ -6,27 +6,28 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const getPublicIdFromUrl = (url, isRaw = false) => {
+const getPublicIdFromUrl = (url) => {
   if (!url) return null;
 
   try {
-    const parts = url.split("/upload/");
-    if (parts.length < 2) return null;
+    const uploadSplit = url.split("/upload/");
+    if (uploadSplit.length < 2) return null;
 
-    let path = parts[1];
+    let path = uploadSplit[1];
+    path = path.split("?")[0];
 
-    if (path.match(/^v\d+\//)) {
-      path = path.split("/").slice(1).join("/");
+    if (path.startsWith("v") && path[1] >= "0" && path[1] <= "9") {
+      const parts = path.split("/");
+      parts.shift();
+      path = parts.join("/");
     }
 
-    const [cleanPath] = path.split("?");
+    const lastDotIndex = path.lastIndexOf(".");
+    const publicId =
+      lastDotIndex !== -1 ? path.substring(0, lastDotIndex) : path;
 
-    const lastDotIndex = cleanPath.lastIndexOf(".");
-    const withoutExtension =
-      lastDotIndex !== -1 ? cleanPath.substring(0, lastDotIndex) : cleanPath;
-
-    return withoutExtension;
-  } catch (error) {
+    return publicId;
+  } catch {
     return null;
   }
 };
@@ -38,7 +39,7 @@ const deletarArquivoCloudinary = async (url, isRaw = false) => {
     );
   }
 
-  const publicId = getPublicIdFromUrl(url, isRaw);
+  const publicId = getPublicIdFromUrl(url);
   if (!publicId) {
     throw new Error(
       `Erro interno: Não foi possível extrair o ID do Cloudinary da URL: ${url}`,
@@ -50,16 +51,21 @@ const deletarArquivoCloudinary = async (url, isRaw = false) => {
   try {
     const resposta = await cloudinary.uploader.destroy(publicId, options);
 
-    if (resposta.result !== "ok" && resposta.result !== "not found") {
+    if (resposta.result !== "ok") {
       throw new Error(
-        `Cloudinary recusou apagar o arquivo ${publicId}. Motivo retornado: ${resposta.result}`,
+        `Cloudinary não apagou. result="${resposta.result}", public_id="${publicId}", resource_type="${options.resource_type || "image"}"`,
       );
     }
 
-    return resposta;
+    return {
+      urlOriginal: url,
+      publicId,
+      options,
+      resposta,
+    };
   } catch (error) {
     throw new Error(
-      `Falha na API do Cloudinary ao apagar ${publicId}: ${error.message}`,
+      `Falha na API do Cloudinary ao apagar "${url}" (public_id: "${publicId}"): ${error.message}`,
     );
   }
 };
