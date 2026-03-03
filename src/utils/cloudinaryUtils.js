@@ -28,6 +28,7 @@ const deletarArquivoCloudinary = async (url, isRaw = false) => {
   try {
     const publicId = getPublicIdFromUrl(url);
     if (publicId) {
+      console.log(`Tentando deletar URL: ${url} | Public ID: ${publicId}`);
       const options = isRaw ? { resource_type: "raw" } : {};
       await cloudinary.uploader.destroy(publicId, options);
       console.log(`Arquivo deletado do Cloudinary: ${publicId}`);
