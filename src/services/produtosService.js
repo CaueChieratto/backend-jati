@@ -137,6 +137,54 @@ async function alterarProdutoService(linha, produtoId, alteracoes) {
   return produtoParaAlterar;
 }
 
+async function alterarProdutoService(linha, produtoId, alteracoes) {
+  const produtoParaAlterar = await obterProdutosPorId(linha, produtoId);
+  if (produtoParaAlterar.deletado) {
+    throw new Error("PRODUTO_DELETADO");
+  }
+
+  if (
+    alteracoes.imagem_produto !== undefined &&
+    alteracoes.imagem_produto !== produtoParaAlterar.imagem_produto
+  ) {
+    if (
+      produtoParaAlterar.imagem_produto &&
+      produtoParaAlterar.imagem_produto.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(produtoParaAlterar.imagem_produto);
+    }
+  }
+
+  if (
+    alteracoes.imagem_patente !== undefined &&
+    alteracoes.imagem_patente !== produtoParaAlterar.imagem_patente
+  ) {
+    if (
+      produtoParaAlterar.imagem_patente &&
+      produtoParaAlterar.imagem_patente.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(produtoParaAlterar.imagem_patente);
+    }
+  }
+
+  if (
+    alteracoes.pdf_produto !== undefined &&
+    alteracoes.pdf_produto !== produtoParaAlterar.pdf_produto
+  ) {
+    if (
+      produtoParaAlterar.pdf_produto &&
+      produtoParaAlterar.pdf_produto.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(produtoParaAlterar.pdf_produto, true);
+    }
+  }
+
+  const produtoAtualizado = { ...alteracoes };
+  await salvarAlteracoesProduto(produtoParaAlterar, produtoAtualizado);
+
+  return produtoParaAlterar;
+}
+
 async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
   const linhaDoc = await LinhaModel.findOne({
     linha: new RegExp(`^${nomeLinha}$`, "i"),
@@ -231,10 +279,6 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
     (p) => p.produto_id === produtoCompleto.produto_id,
   );
 
-  const debugCloudinary = {
-    deletions: [],
-  };
-
   if (indexProduto >= 0) {
     const produtoAntigo = linhaDoc.produtos_linha[indexProduto];
 
@@ -243,14 +287,7 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
         produtoAntigo.imagem_produto &&
         produtoAntigo.imagem_produto.includes("cloudinary")
       ) {
-        const r = await deletarArquivoCloudinary(
-          produtoAntigo.imagem_produto,
-          false,
-        );
-        debugCloudinary.deletions.push({
-          campo: "imagem_produto",
-          ...r,
-        });
+        await deletarArquivoCloudinary(produtoAntigo.imagem_produto);
       }
     }
 
@@ -259,14 +296,7 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
         produtoAntigo.imagem_patente &&
         produtoAntigo.imagem_patente.includes("cloudinary")
       ) {
-        const r = await deletarArquivoCloudinary(
-          produtoAntigo.imagem_patente,
-          false,
-        );
-        debugCloudinary.deletions.push({
-          campo: "imagem_patente",
-          ...r,
-        });
+        await deletarArquivoCloudinary(produtoAntigo.imagem_patente);
       }
     }
 
@@ -275,14 +305,7 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
         produtoAntigo.pdf_produto &&
         produtoAntigo.pdf_produto.includes("cloudinary")
       ) {
-        const r = await deletarArquivoCloudinary(
-          produtoAntigo.pdf_produto,
-          true,
-        );
-        debugCloudinary.deletions.push({
-          campo: "pdf_produto",
-          ...r,
-        });
+        await deletarArquivoCloudinary(produtoAntigo.pdf_produto, true);
       }
     }
 
@@ -293,10 +316,7 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
 
   await linhaDoc.save();
 
-  return {
-    ...produtoCompleto,
-    _debugCloudinary: debugCloudinary,
-  };
+  return produtoCompleto;
 }
 
 async function deletarProdutoService(linha, produtoId) {

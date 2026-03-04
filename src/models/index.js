@@ -3,7 +3,7 @@ function criarModeloLinha(linha) {
     linha: linha.linha,
     painel_linha: linha.painel_linha,
     imagem_linha: linha.imagem_linha,
-    pdf_linha: linha.pdf_linha,
+    pdf_linha: linha.pdf_linha || "",
     deletado: false,
     produtos_linha: [],
   };
