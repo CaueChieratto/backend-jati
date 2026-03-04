@@ -291,15 +291,6 @@ async function salvarProdutoCompletoService(nomeLinha, produtoCompleto) {
       }
     }
 
-    if (produtoCompleto.imagem_patente !== produtoAntigo.imagem_patente) {
-      if (
-        produtoAntigo.imagem_patente &&
-        produtoAntigo.imagem_patente.includes("cloudinary")
-      ) {
-        await deletarArquivoCloudinary(produtoAntigo.imagem_patente);
-      }
-    }
-
     if (produtoCompleto.pdf_produto !== produtoAntigo.pdf_produto) {
       if (
         produtoAntigo.pdf_produto &&
@@ -352,13 +343,6 @@ async function excluirProdutoService(nomeLinha, produtoId) {
     produtoParaExcluir.imagem_produto.includes("cloudinary")
   ) {
     await deletarArquivoCloudinary(produtoParaExcluir.imagem_produto);
-  }
-
-  if (
-    produtoParaExcluir.imagem_patente &&
-    produtoParaExcluir.imagem_patente.includes("cloudinary")
-  ) {
-    await deletarArquivoCloudinary(produtoParaExcluir.imagem_patente);
   }
 
   if (
