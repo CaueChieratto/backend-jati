@@ -8,6 +8,7 @@ const {
   excluirLinhaFisicamente,
 } = require("../repositories/linhasRepository");
 const { formatarParaSalvar } = require("../utils/formatador");
+const { deletarArquivoCloudinary } = require("../utils/cloudinaryUtils");
 
 async function obterTodasLinhas() {
   const linhas = await listarTodasLinhas();
@@ -80,6 +81,42 @@ async function alterarLinhaService(nomeLinha, alteracoes) {
     alteracoes.linha = formatarParaSalvar(alteracoes.linha);
   }
 
+  if (
+    alteracoes.imagem_linha !== undefined &&
+    alteracoes.imagem_linha !== linhaParaAlterar.imagem_linha
+  ) {
+    if (
+      linhaParaAlterar.imagem_linha &&
+      linhaParaAlterar.imagem_linha.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(linhaParaAlterar.imagem_linha);
+    }
+  }
+
+  if (
+    alteracoes.painel_linha !== undefined &&
+    alteracoes.painel_linha !== linhaParaAlterar.painel_linha
+  ) {
+    if (
+      linhaParaAlterar.painel_linha &&
+      linhaParaAlterar.painel_linha.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(linhaParaAlterar.painel_linha);
+    }
+  }
+
+  if (
+    alteracoes.pdf_linha !== undefined &&
+    alteracoes.pdf_linha !== linhaParaAlterar.pdf_linha
+  ) {
+    if (
+      linhaParaAlterar.pdf_linha &&
+      linhaParaAlterar.pdf_linha.includes("cloudinary")
+    ) {
+      await deletarArquivoCloudinary(linhaParaAlterar.pdf_linha, true);
+    }
+  }
+
   const linhaAtualizada = { ...alteracoes };
   return await salvarAlteracoesLinha(linhaParaAlterar, linhaAtualizada);
 }
@@ -100,6 +137,28 @@ async function restaurarLinhaService(nomeLinha) {
 
 async function excluirLinhaService(nomeLinha) {
   const linhaParaExcluir = await obterLinha(nomeLinha);
+
+  if (
+    linhaParaExcluir.imagem_linha &&
+    linhaParaExcluir.imagem_linha.includes("cloudinary")
+  ) {
+    await deletarArquivoCloudinary(linhaParaExcluir.imagem_linha);
+  }
+
+  if (
+    linhaParaExcluir.painel_linha &&
+    linhaParaExcluir.painel_linha.includes("cloudinary")
+  ) {
+    await deletarArquivoCloudinary(linhaParaExcluir.painel_linha);
+  }
+
+  if (
+    linhaParaExcluir.pdf_linha &&
+    linhaParaExcluir.pdf_linha.includes("cloudinary")
+  ) {
+    await deletarArquivoCloudinary(linhaParaExcluir.pdf_linha, true);
+  }
+
   return await excluirLinhaFisicamente(linhaParaExcluir._id);
 }
 
