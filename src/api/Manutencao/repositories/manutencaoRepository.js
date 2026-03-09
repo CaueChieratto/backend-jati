@@ -1,4 +1,4 @@
-const ManutencaoModel = require("../models/ConfigSchema");
+const ManutencaoModel = require("../../../models/ConfigSchema");
 
 async function verEstadoManutencao() {
   let configs = await ManutencaoModel.findOne();

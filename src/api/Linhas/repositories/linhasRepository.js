@@ -1,5 +1,5 @@
-const LinhaModel = require("../models/CatalogoSchema");
-const { formatarParaBusca } = require("../utils/formatador");
+const LinhaModel = require("../../../models/CatalogoSchema");
+const { formatarParaBusca } = require("../../../utils/formatador");
 
 async function listarTodasLinhas() {
   return await LinhaModel.find().sort({ ordem: 1 });

@@ -1,4 +1,4 @@
-const LinhaModel = require("../models/CatalogoSchema");
+const LinhaModel = require("../../../models/CatalogoSchema");
 
 function acharCodigoReferencia(tabela, codigoReferencia) {
   if (!tabela || !tabela.dados) return undefined;
@@ -45,4 +45,5 @@ module.exports = {
   salvarDados,
   salvarAlteracoesDados,
   verificarDuplicidadeDeCodigo,
+  excluirDadosFisicamente,
 };

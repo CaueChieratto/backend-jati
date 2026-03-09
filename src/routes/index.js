@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-const maintenanceRoutes = require("./manutencaoRoutes");
-const linhaRoutes = require("./linhaRoutes");
-const produtosRoutes = require("./produtosRoutes");
-const tabelaRoutes = require("./tabelaRoutes");
-const dadosRoutes = require("./dadosRoutes");
+const maintenanceRoutes = require("../api/Manutencao/routes/manutencaoRoutes");
+const linhaRoutes = require("../api/Linhas/routes/linhaRoutes");
+const produtosRoutes = require("../api/Produtos/routes/produtosRoutes");
+const tabelaRoutes = require("../api/Tabelas/routes/tabelaRoutes");
+const dadosRoutes = require("../api/Dados/routes/dadosRoutes");
 
 const authMiddleware = require("../middlewares/authMiddleware");
 

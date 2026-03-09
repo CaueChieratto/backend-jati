@@ -1,13 +1,13 @@
-const { obterProduto, obterProdutosPorId } = require("./produtosService");
-const { obterLinha } = require("./linhaService");
+const { obterProduto } = require("../../Produtos/services/produtosService");
+const { obterLinha } = require("../../Linhas/services/linhaService");
 const {
   salvarTabela,
   acharTabelaPorId,
   salvarAlteracoesTabela,
   excluirTabelaFisicamente,
 } = require("../repositories/tabelasRepository");
-const { criarModeloTabela } = require("../models");
-const { criarIdTabela } = require("../utils/criarId");
+const { criarModeloTabela } = require("../../../models");
+const { criarIdTabela } = require("../../../utils/criarId");
 
 function obterTabelas(produto) {
   const tabelaProduto = produto.tabelas_produto;

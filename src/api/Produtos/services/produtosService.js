@@ -4,13 +4,14 @@ const {
   salvarAlteracoesProduto,
   excluirProdutoFisicamente,
 } = require("../repositories/produtosRepository");
-const { obterLinha } = require("./linhaService");
-const { criarIdProduto, criarIdTabela } = require("../utils/criarId");
-const { criarModeloProduto } = require("../models");
-const { acharLinhaPeloNome } = require("../repositories/linhasRepository");
-const mongoose = require("mongoose");
-const LinhaModel = require("../models/CatalogoSchema");
-const { deletarArquivoCloudinary } = require("../utils/cloudinaryUtils");
+const { obterLinha } = require("../../Linhas/services/linhaService");
+const { criarIdProduto, criarIdTabela } = require("../../../utils/criarId");
+const { criarModeloProduto } = require("../../../models");
+const {
+  acharLinhaPeloNome,
+} = require("../../Linhas/repositories/linhasRepository");
+const LinhaModel = require("../../../models/CatalogoSchema");
+const { deletarArquivoCloudinary } = require("../../../utils/cloudinaryUtils");
 
 async function obterProduto(linha, id) {
   const produto = await acharProdutoPeloId(linha, id);
@@ -87,54 +88,6 @@ async function criarProdutoService(nomeLinha, produto) {
 
   await salvarProduto(linha, novoProduto);
   return novoProduto;
-}
-
-async function alterarProdutoService(linha, produtoId, alteracoes) {
-  const produtoParaAlterar = await obterProdutosPorId(linha, produtoId);
-  if (produtoParaAlterar.deletado) {
-    throw new Error("PRODUTO_DELETADO");
-  }
-
-  if (
-    alteracoes.imagem_produto !== undefined &&
-    alteracoes.imagem_produto !== produtoParaAlterar.imagem_produto
-  ) {
-    if (
-      produtoParaAlterar.imagem_produto &&
-      produtoParaAlterar.imagem_produto.includes("cloudinary")
-    ) {
-      await deletarArquivoCloudinary(produtoParaAlterar.imagem_produto);
-    }
-  }
-
-  if (
-    alteracoes.imagem_patente !== undefined &&
-    alteracoes.imagem_patente !== produtoParaAlterar.imagem_patente
-  ) {
-    if (
-      produtoParaAlterar.imagem_patente &&
-      produtoParaAlterar.imagem_patente.includes("cloudinary")
-    ) {
-      await deletarArquivoCloudinary(produtoParaAlterar.imagem_patente);
-    }
-  }
-
-  if (
-    alteracoes.pdf_produto !== undefined &&
-    alteracoes.pdf_produto !== produtoParaAlterar.pdf_produto
-  ) {
-    if (
-      produtoParaAlterar.pdf_produto &&
-      produtoParaAlterar.pdf_produto.includes("cloudinary")
-    ) {
-      await deletarArquivoCloudinary(produtoParaAlterar.pdf_produto, true);
-    }
-  }
-
-  const produtoAtualizado = { ...alteracoes };
-  await salvarAlteracoesProduto(produtoParaAlterar, produtoAtualizado);
-
-  return produtoParaAlterar;
 }
 
 async function alterarProdutoService(linha, produtoId, alteracoes) {

@@ -1,6 +1,9 @@
-const { obterProduto } = require("./produtosService");
-const { obterTabelas, obterTabelaPorId } = require("./tabelaService");
-const { obterLinha } = require("./linhaService");
+const { obterProduto } = require("../../Produtos/services/produtosService");
+const {
+  obterTabelas,
+  obterTabelaPorId,
+} = require("../../Tabelas/services/tabelaService");
+const { obterLinha } = require("../../Linhas/services/linhaService");
 const {
   salvarDados,
   acharCodigoReferencia,
@@ -8,8 +11,10 @@ const {
   verificarDuplicidadeDeCodigo,
   excluirDadosFisicamente,
 } = require("../repositories/dadosRepository");
-const { criarModeloDados } = require("../models");
-const { acharTabelaPorId } = require("../repositories/tabelasRepository");
+const { criarModeloDados } = require("../../../models");
+const {
+  acharTabelaPorId,
+} = require("../../Tabelas/repositories/tabelasRepository");
 
 async function obterCodigoReferencia(
   nomeLinha,

@@ -1,4 +1,4 @@
-const { criarModeloLinha } = require("../models");
+const { criarModeloLinha } = require("../../../models");
 const {
   listarTodasLinhas,
   acharLinhaPeloNome,
@@ -7,8 +7,8 @@ const {
   listarLinhasSemProdutos,
   excluirLinhaFisicamente,
 } = require("../repositories/linhasRepository");
-const { formatarParaSalvar } = require("../utils/formatador");
-const { deletarArquivoCloudinary } = require("../utils/cloudinaryUtils");
+const { formatarParaSalvar } = require("../../../utils/formatador");
+const { deletarArquivoCloudinary } = require("../../../utils/cloudinaryUtils");
 
 async function obterTodasLinhas() {
   const linhas = await listarTodasLinhas();

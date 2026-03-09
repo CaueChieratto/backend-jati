@@ -9,7 +9,9 @@ const {
   salvarProdutoCompletoService,
   excluirProdutoService,
 } = require("../services/produtosService");
-const { acharLinhaPeloNome } = require("../repositories/linhasRepository");
+const {
+  acharLinhaPeloNome,
+} = require("../../Linhas/repositories/linhasRepository");
 const {
   atualizarOrdemDosProdutos,
 } = require("../repositories/produtosRepository");
