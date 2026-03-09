@@ -4,6 +4,7 @@ const {
   salvarDadosExtra,
   atualizarDadosExtra,
   deletarDadosExtraFisicamente,
+  atualizarOrdemDadosExtra,
 } = require("../repositories/dadosExtrasRepository");
 
 async function listarDadosExtrasService() {
@@ -49,10 +50,23 @@ async function excluirDadosExtraService(id) {
   await deletarDadosExtraFisicamente(id);
 }
 
+async function reordenarDadosExtrasService(idsOrdenados) {
+  if (!idsOrdenados || !Array.isArray(idsOrdenados)) {
+    throw new Error("DADOS_INVALIDOS_PARA_REORDENAR");
+  }
+
+  const promessas = idsOrdenados.map((id, index) => {
+    return atualizarOrdemDadosExtra(id, index);
+  });
+
+  await Promise.all(promessas);
+}
+
 module.exports = {
   listarDadosExtrasService,
   obterDadosExtraPorIdService,
   criarDadosExtraService,
   alterarDadosExtraService,
   excluirDadosExtraService,
+  reordenarDadosExtrasService,
 };

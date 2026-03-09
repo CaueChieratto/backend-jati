@@ -6,9 +6,11 @@ const {
   adicionarDadosExtra,
   alterarDadosExtra,
   excluirDadosExtra,
+  reordenarDadosExtras,
 } = require("../controllers/dadosExtrasController");
 
 router.get("/dadosExtra", listarDadosExtras);
+router.patch("/dadosExtra/reordenar", reordenarDadosExtras);
 router.get("/dadosExtra/:id", obterDadosExtra);
 router.post("/dadosExtra", adicionarDadosExtra);
 router.patch("/dadosExtra/:id", alterarDadosExtra);

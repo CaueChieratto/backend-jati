@@ -23,10 +23,19 @@ async function deletarDadosExtraFisicamente(id) {
   return await DadosExtraModel.findByIdAndDelete(id);
 }
 
+async function atualizarOrdemDadosExtra(id, novaOrdem) {
+  return await DadosExtraModel.findByIdAndUpdate(
+    id,
+    { ordem: novaOrdem },
+    { new: true },
+  );
+}
+
 module.exports = {
   buscarTodosDadosExtras,
   buscarDadosExtraPorId,
   salvarDadosExtra,
   atualizarDadosExtra,
   deletarDadosExtraFisicamente,
+  atualizarOrdemDadosExtra,
 };

@@ -4,6 +4,7 @@ const {
   criarDadosExtraService,
   alterarDadosExtraService,
   excluirDadosExtraService,
+  reordenarDadosExtrasService,
 } = require("../services/dadosExtrasService");
 
 async function listarDadosExtras(req, res, next) {
@@ -58,10 +59,23 @@ async function excluirDadosExtra(req, res, next) {
   }
 }
 
+async function reordenarDadosExtras(req, res, next) {
+  try {
+    const { ids } = req.body;
+    await reordenarDadosExtrasService(ids);
+    res
+      .status(200)
+      .json({ msg: "Ordem dos Dados Extras atualizada com sucesso!" });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   listarDadosExtras,
   obterDadosExtra,
   adicionarDadosExtra,
   alterarDadosExtra,
   excluirDadosExtra,
+  reordenarDadosExtras,
 };
