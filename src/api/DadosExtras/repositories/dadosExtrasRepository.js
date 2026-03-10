@@ -1,7 +1,7 @@
 const DadosExtraModel = require("../../../models/DadosExtrasSchema");
 
 async function buscarTodosDadosExtras() {
-  return await DadosExtraModel.find({});
+  return await DadosExtraModel.find().sort({ ordem: 1 });
 }
 
 async function buscarDadosExtraPorId(id) {
