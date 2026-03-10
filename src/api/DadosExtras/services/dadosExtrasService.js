@@ -6,6 +6,7 @@ const {
   deletarDadosExtraFisicamente,
   atualizarOrdemDadosExtra,
 } = require("../repositories/dadosExtrasRepository");
+const { deletarArquivoCloudinary } = require("../../../utils/cloudinaryUtils");
 
 async function listarDadosExtrasService() {
   const dados = await buscarTodosDadosExtras();
@@ -36,6 +37,17 @@ async function alterarDadosExtraService(id, alteracoes) {
     throw new Error("DADOS_EXTRA_NAO_ENCONTRADO");
   }
 
+  if (
+    alteracoes.url_imagem &&
+    alteracoes.url_imagem !== dadoExistente.url_imagem
+  ) {
+    await deletarArquivoCloudinary(dadoExistente.url_imagem);
+  }
+
+  if (alteracoes.url_pdf && alteracoes.url_pdf !== dadoExistente.url_pdf) {
+    await deletarArquivoCloudinary(dadoExistente.url_pdf);
+  }
+
   const dadoAtualizado = await atualizarDadosExtra(id, alteracoes);
   return dadoAtualizado;
 }
@@ -45,6 +57,14 @@ async function excluirDadosExtraService(id) {
 
   if (!dadoExistente) {
     throw new Error("DADOS_EXTRA_NAO_ENCONTRADO");
+  }
+
+  if (dadoExistente.url_imagem) {
+    await deletarArquivoCloudinary(dadoExistente.url_imagem);
+  }
+
+  if (dadoExistente.url_pdf) {
+    await deletarArquivoCloudinary(dadoExistente.url_pdf);
   }
 
   await deletarDadosExtraFisicamente(id);
